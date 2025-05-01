@@ -1,4 +1,6 @@
 import { createStore } from 'vuex'
+import chat from './modules/chat'
+import auth from './modules/auth'
 
 export default createStore({
   state: {
@@ -10,5 +12,7 @@ export default createStore({
   actions: {
   },
   modules: {
+    chat,
+    auth
   }
 })
