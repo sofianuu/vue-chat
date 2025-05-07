@@ -28,11 +28,11 @@
             {{ isLoading ? 'Se procesează...' : 'Autentificare' }}
           </button>
         </form>
-        
-        <div class="server-info">
-          <p>Server API: <span>http://localhost:8080</span></p>
-          <p>Client: <span>http://localhost:8081</span></p>
+
+        <div class="register-link">
+          <p> Nu ai cont? <router-link to="/register">Înregistrează-te</router-link> </p>
         </div>
+      
       </div>
     </div>
   </template>
@@ -171,6 +171,13 @@
     padding: 10px;
     border-radius: 4px;
     border-left: 4px solid #e74c3c;
+  }
+
+  .register-link {
+    margin-top: 20px;
+    text-align: center;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
   }
   
   .server-info {

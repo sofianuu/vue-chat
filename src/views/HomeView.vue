@@ -5,7 +5,10 @@
     
     <div class="actions">
       <router-link v-if="isAuthenticated" to="/chat" class="primary-btn">Intră în Chat</router-link>
-      <router-link v-else to="/login" class="primary-btn">Autentificare</router-link>
+      <template v-else>
+        <router-link to="/login" class="primary-btn">Autentificare</router-link>
+        <router-link to="/register" class="primary-btn">Creare cont</router-link>
+      </template>
       <button v-if="isAuthenticated" @click="logout" class="secondary-btn">Deconectare</button>
     </div>
     
