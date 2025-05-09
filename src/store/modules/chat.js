@@ -17,8 +17,16 @@ export default {
     SET_CONNECTED(state, status) {
       state.isConnected = status;
     },
+    SET_USERNAME(state, username) {
+      state.username = username;
+      localStorage.setItem('username', username);
+    }
+    ,
     ADD_MESSAGE(state, message) {
       state.messages.push(message);
+    },
+    ADD_MESSAGES(state, messages) {
+      state.messages = [...state.messages, ...messages];
     },
     CLEAR_MESSAGES(state) {
       state.messages = [];
@@ -59,14 +67,51 @@ export default {
       socket.onmessage = (event) => {
         const messageData = event.data;
         console.log('Mesaj primit:', messageData);
+
+        try {
+          const parsedData = JSON.parse(messageData);
+
+          if(parsedData.type === "history" && Array.isArray(parsedData.messages)) {
+            console.log('Istoric mesaje primit:', parsedData.messages);
+          
+
+            const formattedMessages = parsedData.messages.map(msg => ({
+              text: msg.content,
+              isSelf: msg.username === state.username,
+              timestamp: new Date(msg.timestamp).toLocaleString(),
+              username: msg.username
+            }));
+
+            commit('ADD_MESSAGES', formattedMessages);
+            return;
+          }
+
+          if(parsedData.username && parsedData.content) {
+            const message = {
+              text: parsedData.content,
+              isSelf: parsedData.username === state.username,
+              timestamp: new Date().toLocaleString(),
+              username: parsedData.username
+            };
+            commit('ADD_MESSAGE', message);
+            return;
+          }
+
+        }catch(e) {
+          console.log('Mesajul nu este JSON, se trateaza ca text simplu');
+        }
+
+        
         
         // Adaugă mesajul în lista de mesaje
         const message = {
           text: messageData,
           isSelf: false,
-          timestamp: new Date().toLocaleTimeString()
+          timestamp: new Date().toLocaleString(),
+          username: 'Necunoscut'
         };
         commit('ADD_MESSAGE', message);
+        
       };
       
       socket.onclose = (event) => {
@@ -125,12 +170,18 @@ export default {
       commit('ADD_MESSAGE', {
         text: message,
         isSelf: true,
-        timestamp: new Date().toLocaleTimeString()
+        timestamp: new Date().toLocaleString(),
+        username: state.username
       });
     },
     
     clearMessages({ commit }) {
       commit('CLEAR_MESSAGES');
+    }, 
+
+    setUsername({ commit }, username) {
+      commit('SET_USERNAME', username);
     }
+
   }
 };

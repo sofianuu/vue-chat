@@ -11,7 +11,11 @@
       <div v-for="(message, index) in messages" :key="index" 
            class="message" 
            :class="message.isSelf ? 'message-sent' : 'message-received'">
-        {{ message.text }}
+        <div class="message-header">
+          <span class="message-username" v-if="!message.isSelf">{{ message.username }}</span>
+          <span class="message-username message-self" v-else>Tu</span>
+        </div>
+        <div class="message-content">{{ message.text }}</div>
         <div class="message-info">
           {{ message.timestamp }}
         </div>
@@ -166,10 +170,32 @@ export default {
 .message-sent {
   background-color: #d6eaff;
   margin-left: auto;
+  text-align: right;
 }
 
 .message-received {
   background-color: #e9e9e9;
+  text-align: left;
+}
+
+.message-header{
+  margin-bottom: 5 px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.message-username {
+  font-weight: bold;
+  color: #2c3e50;
+  font-size: 0.9em;
+}
+
+.message-self {
+  color: #1e88e5
+}
+
+.message-content {
+  margin-bottom: 5px;
 }
 
 .message-info {
@@ -191,6 +217,7 @@ export default {
   border-radius: 4px;
   outline: none;
 }
+
 
 .send-button {
   background: #42b983;
