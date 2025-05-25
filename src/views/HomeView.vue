@@ -9,23 +9,10 @@
         <router-link to="/login" class="primary-btn">Autentificare</router-link>
         <router-link to="/register" class="primary-btn">Creare cont</router-link>
       </template>
-      <button v-if="isAuthenticated" @click="logout" class="secondary-btn">Deconectare</button>
+      
     </div>
     
-    <div class="features">
-      <div class="feature">
-        <h3>Mesagerie în timp real</h3>
-        <p>Comunică instant cu alți utilizatori fără a reîncărca pagina.</p>
-      </div>
-      <div class="feature">
-        <h3>Autentificare securizată</h3>
-        <p>Sistem de autentificare cu OTP pentru conexiuni sigure.</p>
-      </div>
-      <div class="feature">
-        <h3>Tehnologii moderne</h3>
-        <p>Construit cu Vue.js, Vuex și backend Go cu WebSockets.</p>
-      </div>
-    </div>
+    
   </div>
 </template>
 

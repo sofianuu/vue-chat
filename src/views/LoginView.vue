@@ -46,7 +46,7 @@
         password: '',
         error: '',
         isLoading: false,
-        apiUrl: 'http://localhost:8080' // URL-ul explicit către serverul Go
+        apiUrl: 'http://localhost:88' // URL-ul explicit către serverul Go
       }
     },
     methods: {
@@ -78,7 +78,10 @@
             
             // Stochează OTP-ul în localStorage și Vuex store
             localStorage.setItem('otp', data.otp);
-            this.$store.dispatch('auth/login', { otp: data.otp });
+            this.$store.dispatch('auth/login', {
+              otp: data.otp,
+              username: data.username
+              });
             
             // Redirecționare către chat
             this.$router.push('/chat');
@@ -91,7 +94,7 @@
           }
         } catch (err) {
           console.error('Eroare login:', err);
-          this.error = 'Eroare de conexiune. Verificați dacă serverul rulează pe portul 8080.';
+          this.error = 'Eroare de conexiune. Verificați dacă serverul rulează pe portul 88.';
         } finally {
           this.isLoading = false;
         }

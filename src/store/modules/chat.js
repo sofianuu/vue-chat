@@ -4,11 +4,13 @@ export default {
     socket: null,
     isConnected: false,
     messages: [],
-    reconnectAttempts: 0
+    reconnectAttempts: 0,
+    username: localStorage.getItem('username') || 'Anonymous'
   },
   getters: {
     isConnected: state => state.isConnected,
-    messages: state => state.messages
+    messages: state => state.messages,
+    username: state => state.username
   },
   mutations: {
     SET_SOCKET(state, socket) {
@@ -47,13 +49,22 @@ export default {
         return;
       }
 
+      const username = rootGetters['auth/username'];
+      if(username){
+        commit('SET_USERNAME', username);
+        console.log('Username setat:', username);
+      }
+      else{
+       console.warn('Nu s-a putut obține username-ul din auth store');
+      }
+
       // Închide orice conexiune existentă
       if (state.socket) {
         state.socket.close();
       }
       
       // Folosește OTP-ul în URL-ul de conectare WebSocket
-      const wsUrl = `ws://localhost:8080/ws?otp=${otp}`;
+      const wsUrl = `ws://localhost:88/ws?otp=${otp}`;
       console.log('Încercare de conectare la:', wsUrl);
       
       const socket = new WebSocket(wsUrl);
@@ -67,21 +78,20 @@ export default {
       socket.onmessage = (event) => {
         const messageData = event.data;
         console.log('Mesaj primit:', messageData);
+        console.log('Username utilizator curent:', username);
 
         try {
           const parsedData = JSON.parse(messageData);
 
           if(parsedData.type === "history" && Array.isArray(parsedData.messages)) {
             console.log('Istoric mesaje primit:', parsedData.messages);
-          
-
+           // console.log('Username mesaj istoric:', msg.username);
             const formattedMessages = parsedData.messages.map(msg => ({
               text: msg.content,
               isSelf: msg.username === state.username,
               timestamp: new Date(msg.timestamp).toLocaleString(),
               username: msg.username
             }));
-
             commit('ADD_MESSAGES', formattedMessages);
             return;
           }
@@ -163,8 +173,14 @@ export default {
         return;
       }
       
-      console.log('Trimit mesaj:', message);
-      state.socket.send(message);
+      try {
+    console.log('[DEBUG] Sending message through socket...');
+    state.socket.send(message);
+    console.log('[DEBUG] Message sent successfully');
+  } catch (error) {
+    console.error('[ERROR] Failed to send message:', error);
+    return;
+  }
       
       // Adaugă mesajul în lista locală
       commit('ADD_MESSAGE', {

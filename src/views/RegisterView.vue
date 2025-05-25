@@ -69,7 +69,7 @@
         error: '',
         success: '',
         isLoading: false,
-        apiUrl: 'http://localhost:8080' // URL-ul explitcit către serverul Go
+        apiUrl: 'http://localhost:88' // URL-ul explitcit către serverul Go
       }
     },
     methods: {
@@ -80,6 +80,7 @@
         // Validare parolă
         if (this.password !== this.confirmPassword) {
           this.error = 'Parolele nu se potrivesc';
+          this.resetForm();
           return;
         }
         
@@ -113,7 +114,12 @@
               this.$router.push('/login');
             }, 2000);
           } else {
-            this.error = data.message || 'Eroare la înregistrare';
+            if (data.message === 'Username already used'){
+              this.error = 'Username deja folosit. Încearcă alt username!';
+            } else{
+              this.error=data.message || 'Eroare la înregistrare';
+            }
+            this.resetForm();
           }
         } catch (err) {
           console.error('Eroare înregistrare:', err);
@@ -121,7 +127,13 @@
         } finally {
           this.isLoading = false;
         }
-      }
+      },
+    resetForm(){
+      this.username = '';
+      this.email='';
+      this.password='';
+      this.confirmPassword='';
+    }
     }
   }
   </script>

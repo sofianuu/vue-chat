@@ -6,7 +6,8 @@ export default {
     },
     getters: {
       isAuthenticated: state => state.isAuthenticated,
-      getOtp: state => state.otp
+      getOtp: state => state.otp,
+      username: state => state.username || localStorage.getItem('username')
     },
     mutations: {
       SET_OTP(state, otp) {
@@ -17,11 +18,20 @@ export default {
         } else {
           localStorage.removeItem('otp');
         }
+      },
+      SET_USERNAME(state, username) {
+        state.username = username;
+        if(username) {
+          localStorage.setItem('username', username);
+        } else{
+          localStorage.removeItem('username');
+        }
       }
     },
     actions: {
-      login({ commit }, { otp }) {
+      login({ commit }, { otp, username }) {
         commit('SET_OTP', otp);
+        commit('SET_USERNAME', username);
       },
       logout({ commit }) {
         commit('SET_OTP', null);
